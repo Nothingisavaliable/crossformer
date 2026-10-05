@@ -2,7 +2,9 @@ from typing import Any, Mapping, Sequence, Union
 
 import jax
 
-PRNGKey = jax.random.KeyArray
+# ``KeyArray`` was removed from the public API in newer JAX releases. Typed
+# and legacy PRNG keys are both JAX arrays for the purposes of these aliases.
+PRNGKey = jax.Array
 PyTree = Union[jax.typing.ArrayLike, Mapping[str, "PyTree"]]
 Config = Union[Any, Mapping[str, "Config"]]
 Params = Mapping[str, PyTree]
