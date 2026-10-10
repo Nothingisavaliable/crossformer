@@ -51,7 +51,7 @@ class ActionHead(ABC):
 
 def masked_mean(x, mask):
     mask = jnp.broadcast_to(mask, x.shape)
-    return jnp.mean(x * mask) / jnp.clip(jnp.mean(mask), a_min=1e-5, a_max=None)
+    return jnp.mean(x * mask) / jnp.maximum(jnp.mean(mask), 1e-5)
 
 
 def continuous_loss(
