@@ -170,6 +170,12 @@ def main(_):
     train_data_iter = map(process_batch, train_data_iter)
     example_batch = next(train_data_iter)
 
+    logging.info(
+        "Merged model max_horizon: %s; example timestep_pad_mask shape: %s",
+        config["model"]["max_horizon"],
+        example_batch["observation"]["timestep_pad_mask"].shape,
+    )
+
     #########
     #
     # Load Pretrained Model
