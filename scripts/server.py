@@ -164,7 +164,7 @@ class HttpServer:
             obs = stack_and_pad(self.history, self.num_obs)
 
             # add batch dim
-            obs = jax.tree_map(lambda x: x[None], obs)
+            obs = jax.tree_util.tree_map(lambda x: x[None], obs)
 
             unnormalization_statistics = self.models[model_name].dataset_statistics[
                 self.dataset_name
