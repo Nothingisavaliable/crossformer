@@ -74,7 +74,13 @@ def initialize_compilation_cache(
     cache_dir=os.path.expanduser("~/.jax_compilation_cache"),
 ):
     """Initializes the Jax persistent compilation cache."""
-    compilation_cache.initialize_cache(cache_dir)
+    # JAX >= 0.9 removed the deprecated initialize_cache() API.
+    # set_cache_dir() is the supported replacement; keep a fallback for
+    # older CrossFormer-compatible JAX releases.
+    if hasattr(compilation_cache, "set_cache_dir"):
+        compilation_cache.set_cache_dir(cache_dir)
+    else:
+        compilation_cache.initialize_cache(cache_dir)
     for logger in [logging.getLogger(name) for name in logging.root.manager.loggerDict]:
         logger.addFilter(
             lambda record: "Not writing persistent cache entry for"
