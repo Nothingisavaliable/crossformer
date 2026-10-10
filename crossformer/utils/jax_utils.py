@@ -60,7 +60,10 @@ def replicate(x: Any, devices: Optional[Sequence[jax.Device]] = None) -> jax.Arr
     as long as PyTrees are equal on all hosts."""
     if devices is None:
         devices = jax.devices()
-    sharding = jax.sharding.PositionalSharding(devices).replicate()
+    sharding = jax.sharding.NamedSharding(
+        jax.sharding.Mesh(devices, "devices"),
+        jax.sharding.PartitionSpec(),
+    )
     x = jax.tree_util.tree_map(jnp.array, x)
     return jax.tree_util.tree_map(
         lambda arr: jax.make_array_from_callback(

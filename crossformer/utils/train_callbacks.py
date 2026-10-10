@@ -176,7 +176,10 @@ class ValidationCallback(Callback):
 
         @partial(
             jax.jit,
-            out_shardings=jax.sharding.PositionalSharding(jax.devices()).replicate(),
+            out_shardings=jax.sharding.NamedSharding(
+                jax.sharding.Mesh(jax.devices(), "devices"),
+                jax.sharding.PartitionSpec(),
+            ),
         )
         def eval_step(state: TrainState, batch: Data):
             loss_fn_partial = partial(
