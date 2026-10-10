@@ -125,7 +125,10 @@ class CrossFormerTransformer(nn.Module):
         ), "readouts must be specified in the model config"
 
         batch_size, horizon = jax.tree_util.tree_leaves(observations)[0].shape[:2]
-        assert horizon <= self.max_horizon, "horizon must be <= max_horizon"
+        assert horizon <= self.max_horizon, (
+            f"horizon={horizon} must be <= max_horizon={self.max_horizon}; "
+            f"observation_shapes={jax.tree_util.tree_map(lambda x: x.shape, observations)}"
+        )
         assert jax.tree_util.tree_all(
             jax.tree_util.tree_map(lambda x: x.shape[1] == horizon, observations)
         ), "observations must have the same horizon"
