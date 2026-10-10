@@ -422,8 +422,15 @@ class CrossFormerModel:
         """
         module = CrossFormerModule.create(**config["model"])
         rng = rng if rng is not None else jax.random.PRNGKey(0)
+        # ``process_allgather`` stacks each host's local batch, producing
+        # ``(num_processes, local_batch, ...)``.  Flatten those two leading
+        # dimensions before selecting one initialization example.  Keeping the
+        # process dimension used to make a local batch of 32 look like a
+        # temporal horizon of 32 to CrossFormer.
         example_batch = multihost_utils.process_allgather(example_batch)
-        example_batch = jax.tree_util.tree_map(lambda x: x[:1], example_batch)
+        example_batch = jax.tree_util.tree_map(
+            lambda x: x.reshape((-1, *x.shape[2:]))[:1], example_batch
+        )
 
         init_args = (
             example_batch["observation"],
