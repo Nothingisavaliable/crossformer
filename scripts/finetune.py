@@ -243,7 +243,7 @@ def main(_):
         save_callback = SaveCallback(None)
         logging.warning("save_dir not passed in, not saving checkpoints")
 
-    example_batch_spec = jax.tree_map(
+    example_batch_spec = jax.tree_util.tree_map(
         lambda arr: (arr.shape, str(arr.dtype)), example_batch
     )
     wandb.config.update(
